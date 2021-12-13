@@ -41,7 +41,11 @@ public class WebConfig implements WebMvcConfigurer {
 
 ## 定义过滤器
 过滤器的工作原理：
+</br>
+
 ![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/filter_flow.png)
+</br>
+
 1. 自定义过滤器一： 继承 Filter 类，详情参考[FirstFilter](./src/main/java/com/zempty/spring_skill_learn/filter/FirstFilter.java)
 ```java
 @Component
