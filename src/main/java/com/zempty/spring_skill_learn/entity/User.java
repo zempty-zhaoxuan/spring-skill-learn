@@ -1,4 +1,4 @@
-package com.zempty.merquri_code_learn.entity;
+package com.zempty.spring_skill_learn.entity;
 
 import java.time.LocalDateTime;
 

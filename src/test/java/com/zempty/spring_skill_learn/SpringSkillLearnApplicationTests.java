@@ -1,10 +1,10 @@
-package com.zempty.merquri_code_learn;
+package com.zempty.spring_skill_learn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MerquriCodeLearnApplicationTests {
+class SpringSkillLearnApplicationTests {
 
     @Test
     void contextLoads() {

@@ -1,6 +1,6 @@
-package com.zempty.merquri_code_learn.config;
+package com.zempty.spring_skill_learn.config;
 
-import com.zempty.merquri_code_learn.interceptor.TestInterceptor;
+import com.zempty.spring_skill_learn.interceptor.TestInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

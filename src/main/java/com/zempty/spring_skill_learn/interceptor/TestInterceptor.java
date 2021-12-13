@@ -1,4 +1,4 @@
-package com.zempty.merquri_code_learn.interceptor;
+package com.zempty.spring_skill_learn.interceptor;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

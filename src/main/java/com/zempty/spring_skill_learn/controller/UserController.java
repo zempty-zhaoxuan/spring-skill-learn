@@ -1,4 +1,4 @@
-package com.zempty.merquri_code_learn.controller;
+package com.zempty.spring_skill_learn.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
