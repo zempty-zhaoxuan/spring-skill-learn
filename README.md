@@ -128,3 +128,20 @@ HttpMessageConverters 才可以使用,相关的文档参考：
 ```
 UserController 中 "/user" 接口可以用来验证测试。
 
+
+## i18n 国际化的支持
+spring boot 默认对 i18n 的支持，默认使用 AcceptHeaderLocaleResolver 来解析浏览器头部的 Accept-Language 来获取 Locale 切换不同语言。
+
+![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/accept-language.png)
+
+spring boot 默认使用 i18n 的步骤如下：
+1. 准备各种语言文件，语言文件格式为： xxxx.properties (默认的)，xxxx_en_US.properties /xxxx_zh_CN.properties 即：xxxx_国家代码.properties。
+2. spring boot 配置文件中指定语言文件的位置：
+```java
+
+spring.messages.encoding=UTF-8
+spring.messages.basename=static/i18n/messages,static/i18n/zempty
+
+```
+
+

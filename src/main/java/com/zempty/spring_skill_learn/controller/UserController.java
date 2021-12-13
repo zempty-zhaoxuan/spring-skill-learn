@@ -1,6 +1,9 @@
 package com.zempty.spring_skill_learn.controller;
 
 import com.zempty.spring_skill_learn.entity.User;
+import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -8,7 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDateTime;
 
 @Controller
+@AllArgsConstructor
 public class UserController {
+
+
+    private MessageSource messageSource;
 
 
     @ResponseBody
@@ -39,6 +46,15 @@ public class UserController {
     public User useUser(User user) {
         System.out.println(user);
         return user;
+    }
+
+
+    @ResponseBody
+    @GetMapping("/i18n")
+    public String i18n() {
+        String job = messageSource.getMessage("user.job", null, LocaleContextHolder.getLocale());
+        String name = messageSource.getMessage("user.username", null, LocaleContextHolder.getLocale());
+        return name +"'s job is " + job ;
     }
 
 
