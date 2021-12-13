@@ -2,3 +2,7 @@ GET http://localhost:8080/interceptor
 
 ###
 GET http://localhost:8080/modify_response
+
+
+###
+GET http://localhost:8080/user

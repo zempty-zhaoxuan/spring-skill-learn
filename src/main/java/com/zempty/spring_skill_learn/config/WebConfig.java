@@ -6,12 +6,14 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.zempty.spring_skill_learn.interceptor.TestInterceptor;
 import com.zempty.spring_skill_learn.reponse.UserModifyResponse;
+import com.zempty.spring_skill_learn.request.RequestPackage;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -60,6 +62,12 @@ public class WebConfig implements WebMvcConfigurer {
         StringHttpMessageConverter stringHttpMessageConverter =
                 new StringHttpMessageConverter(Charset.forName("UTF-8"));
         return new HttpMessageConverters(fastJsonHttpMessageConverter, stringHttpMessageConverter);
+    }
 
+
+    // 注入提请封装参数的实体类进入 spring
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new RequestPackage());
     }
 }

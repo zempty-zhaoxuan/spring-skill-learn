@@ -34,6 +34,13 @@ public class UserController {
         return user;
     }
 
+    @ResponseBody
+    @GetMapping("/user")
+    public User useUser(User user) {
+        System.out.println(user);
+        return user;
+    }
+
 
 
 }

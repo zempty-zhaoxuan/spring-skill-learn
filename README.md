@@ -102,5 +102,24 @@ spring 进行管理，详情参考[SecondFilter](src/main/java/com/zempty/spring
 
 这里遇到一个坑,一开始使用的是  public void configureMessageConverters configureMessageConverters(List<HttpMessageConverter<?>> converters)来注入修改返回值但是结果无效，后来使用上面的代码重新注入
 HttpMessageConverters 才可以使用,相关的文档参考：
+
 [Custom Jackson deserializer does not get registered in Spring](https://stackoverflow.com/questions/39891911/custom-jackson-deserializer-does-not-get-registered-in-spring)
+</br>
+
 [springboot 修改fastjson序列化javabean并添加自定义注解](https://www.i4k.xyz/article/qq_33446715/82289796)
+</br>
+
+
+## 提前封装实体类，后续接口使用
+
+1. 定义一个继承 HandlerMethodArgumentResolver 的类，实现其抽象方法，详情可见 [RequestPackage](./src/main/java/com/zempty/spring_skill_learn/request/RequestPackage.java)
+2. 注入 spring ，详情配置如下：
+```java
+ // 注入提请封装参数的实体类进入 spring
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new RequestPackage());
+    }
+```
+UserController 中 "/user" 接口可以用来验证测试。
+
