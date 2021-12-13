@@ -41,10 +41,10 @@ public class WebConfig implements WebMvcConfigurer {
 
 ## 定义过滤器
 过滤器的工作原理：
-</br>
+
 
 ![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/filter_flow.png)
-</br>
+
 
 1. 自定义过滤器一： 继承 Filter 类，详情参考[FirstFilter](./src/main/java/com/zempty/spring_skill_learn/filter/FirstFilter.java)
 ```java
@@ -108,10 +108,11 @@ spring 进行管理，详情参考[SecondFilter](src/main/java/com/zempty/spring
 HttpMessageConverters 才可以使用,相关的文档参考：
 
 [Custom Jackson deserializer does not get registered in Spring](https://stackoverflow.com/questions/39891911/custom-jackson-deserializer-does-not-get-registered-in-spring)
-</br>
+
 
 [springboot 修改fastjson序列化javabean并添加自定义注解](https://www.i4k.xyz/article/qq_33446715/82289796)
-</br>
+
+
 
 
 ## 提前封装实体类，后续接口使用
