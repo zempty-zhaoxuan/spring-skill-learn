@@ -42,7 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
 ## 定义过滤器
 过滤器的工作原理：
 ![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/filter_flow.png)
-1. 自定义过滤器一： 继承 Filter 类，详情参考[FirstFilter](src/main/java/com/zempty/spring_skill_learn/filter/FirstFilter.java)
+1. 自定义过滤器一： 继承 Filter 类，详情参考[FirstFilter](./src/main/java/com/zempty/spring_skill_learn/filter/FirstFilter.java)
 ```java
 @Component
 @Order(1)
@@ -74,3 +74,33 @@ public class FirstFilter implements Filter {
 2. 注解定义 filter 使用 @WebFilter+@ServletComponentScan, @WebFilter定义在实体类上面，可以定义允许访问的 url ,@ServletComponentScan定义在启动类上面,注入到
 spring 进行管理，详情参考[SecondFilter](src/main/java/com/zempty/spring_skill_learn/filter/SecondFilter.java)
 3. java 配置 filter, 详情参考 [FilterConfig](src/main/java/com/zempty/spring_skill_learn/config/FilterConfig.java),可以定义 filter 的执行顺序，和访问的 url
+
+## 使用 ContextValueFilter (fastJson) 修改返回值
+
+1.定义一个类继承 ContextValueFilter , 该类用来处理修改返回值的逻辑操作，详情见 [UserModifyResponse](./src/main/java/com/zempty/spring_skill_learn/reponse/UserModifyResponse.java)
+这里可以根据需求修改要返回的值。
+2.注入消息转换器，详细定义可参考如下，详情见 [WebConfig](./src/main/java/com/zempty/spring_skill_learn/config/WebConfig.java)：
+```java
+    @Bean
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+
+        FastJsonHttpMessageConverter fastJsonHttpMessageConverter =
+                new FastJsonHttpMessageConverter();
+        //创建FastJson对象并设定序列化规则
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        //添加自定义valueFilter
+        fastJsonConfig.setSerializeFilters(new UserModifyResponse());
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        fastJsonHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+        //规则赋予转换对象
+        fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
+        StringHttpMessageConverter stringHttpMessageConverter =
+                new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        return new HttpMessageConverters(fastJsonHttpMessageConverter, stringHttpMessageConverter);
+    }
+```
+
+这里遇到一个坑,一开始使用的是  public void configureMessageConverters configureMessageConverters(List<HttpMessageConverter<?>> converters)来注入修改返回值但是结果无效，后来使用上面的代码重新注入
+HttpMessageConverters 才可以使用,相关的文档参考：
+[Custom Jackson deserializer does not get registered in Spring](https://stackoverflow.com/questions/39891911/custom-jackson-deserializer-does-not-get-registered-in-spring)
+[springboot 修改fastjson序列化javabean并添加自定义注解](https://www.i4k.xyz/article/qq_33446715/82289796)

@@ -1,9 +1,25 @@
 package com.zempty.spring_skill_learn.config;
 
+import com.alibaba.fastjson.serializer.SerializeFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.zempty.spring_skill_learn.interceptor.TestInterceptor;
+import com.zempty.spring_skill_learn.reponse.UserModifyResponse;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -11,5 +27,39 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TestInterceptor()).addPathPatterns("/**");
+    }
+
+
+    //使用该方法修改返回值的时候发现无效
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        FastJsonHttpMessageConverter messageConverter = new FastJsonHttpMessageConverter();
+//        messageConverter.setSupportedMediaTypes(Arrays.asList(
+//                MediaType.APPLICATION_JSON_UTF8,
+//                new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8)
+//        ));
+//        SerializeFilter[] modifyResponses = {new UserModifyResponse()};
+//        messageConverter.getFastJsonConfig().setSerializeFilters(modifyResponses);
+//        converters.add(messageConverter);
+//    }
+
+
+    @Bean
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+
+        FastJsonHttpMessageConverter fastJsonHttpMessageConverter =
+                new FastJsonHttpMessageConverter();
+        //创建FastJson对象并设定序列化规则
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        //添加自定义valueFilter
+        fastJsonConfig.setSerializeFilters(new UserModifyResponse());
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        fastJsonHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+        //规则赋予转换对象
+        fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
+        StringHttpMessageConverter stringHttpMessageConverter =
+                new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        return new HttpMessageConverters(fastJsonHttpMessageConverter, stringHttpMessageConverter);
+
     }
 }
