@@ -33,9 +33,9 @@ public class WebConfig implements WebMvcConfigurer {
 
 
 //        添加 LocaleChangeInterceptor,通过用户请求的 url 中添加参数来指定Locale (可以使用在 SessionLocaleResolver/CookieLocaleResolver)中
-//        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-//        localeChangeInterceptor.setParamName("lang");//拦截 lang 参数
-//        registry.addInterceptor(localeChangeInterceptor);
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");//拦截 lang 参数
+        registry.addInterceptor(localeChangeInterceptor);
 
     }
 

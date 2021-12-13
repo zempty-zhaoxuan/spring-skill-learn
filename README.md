@@ -134,7 +134,8 @@ spring boot 默认对 i18n 的支持，默认使用 AcceptHeaderLocaleResolver �
 
 ![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/accept-language.png)
 
-spring boot 默认使用 i18n 的步骤如下：
+springboot 默认使用 i18n 的步骤如下：
+### 使用 spingboot 默认的 i18n 功能
 1. 准备各种语言文件，语言文件格式为： xxxx.properties (默认的)，xxxx_en_US.properties /xxxx_zh_CN.properties 即：xxxx_国家代码.properties。
 2. spring boot 配置文件中指定语言文件的位置：
 ```java
@@ -143,5 +144,53 @@ spring.messages.encoding=UTF-8
 spring.messages.basename=static/i18n/messages,static/i18n/zempty
 
 ```
+可以切换到 v5.0 tag 进行测试 UserController 中的 /i18n 接口进行测试.
+
+### 使用自定义的 i18n 功能
+
+关于 i18n 中的几个 LocaleResolver :
+
+SessionLocaleResolver: Locale 使用 session 来保存，文件语言的切换在 session 作用域内有效；
+CookieLocaleResolver: Locale 使用 cookie 来保存，文件语言切换通过 cookie 来保存；
+FixedLocaleResolver: 使用固定的 Locale ,就是不切换语言，使用意义不大；
+AcceptHeaderLocaleResolver: 这个是 springboot 默认使用的 LocaleResolver ,通过客户端指定 Accept-Language 头部信息来切换语言。
+
+关于自定义的 LocaleResolver 可以参考 [SessionLocaleConfig](./src/main/java/com/zempty/spring_skill_learn/config/SessionLocaleConfig.java)来进行配置注入：
+```java 
+
+@Configuration
+public class SessionLocaleConfig  {
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+        sessionLocaleResolver.setDefaultLocale(Locale.CHINA);
+        return sessionLocaleResolver;
+    }
+}
+
+```
+我曾在这里犯了一个错误，我把方法名定义成 sessionLocaleResolver 程序会报错：
+>>  Request processing failed; nested exception is java.lang.UnsupportedOperationException: Cannot change HTTP accept header - use a different locale resolution strategy
+
+**这里应该注意，注入的 bean name 应该是 localeResolver。**
+
+当在使用 SessionLocaleResolver 或者 CookieLocaleResolver 的时候可以配置 LocaleChangeInterceptor 的拦截器，来指定请求参数获取 Locale ,细节可参考 [WebConfig](./src/main/java/com/zempty/spring_skill_learn/config/WebConfig.java)
+```java
+    //配置拦截器，配置拦截器的访问路径等
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new TestInterceptor()).addPathPatterns("/**");
+
+
+//        添加 LocaleChangeInterceptor,通过用户请求的 url 中添加参数来指定Locale (可以使用在 SessionLocaleResolver/CookieLocaleResolver)中
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");//拦截 lang 参数
+        registry.addInterceptor(localeChangeInterceptor);
+
+    }
+
+```
+这样客户端访问的时候便可以使用 http://xxxxx?lang=zh_CN 形式的访问来切换语言。
 
 
