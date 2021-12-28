@@ -193,4 +193,24 @@ public class SessionLocaleConfig  {
 ```
 这样客户端访问的时候便可以使用 http://xxxxx?lang=zh_CN 形式的访问来切换语言。
 
+## FreeMarker 的使用
+1. 引入 freemarker 的依赖：
+>> implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 
+2. 配置 application.properties 关于 freemarker 的配置,常用配置如下所示：
+
+![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/spring_freemarker.png)
+
+测试可以在 UserController 中的 /freemarker 接口中进行测试,访问接口，跳到 [helloworld.ftl](./src/main/resources/templates/helloworld.ftl)
+
+## ELK 日志系统的搭建
+1. application.properties 中配置 log 文件的生成位置：
+>> logging.file.name= logs/application.log
+2. 配置 ElasticSearch + LogStash + Kibana 
+![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/202112282224439.png)
+
+该项目中的 logstash.conf 需要复制，粘贴到 LogStash 的配置文件 logstash.conf 中使用。
+具体软件安装步骤，可 google 搜索教程安装。
+参考文章:
+
+[Spring Boot Logs with Elasticsearch, Logstash and Kibana(ELK)](https://medium.com/hprog99/spring-boot-logs-with-elasticsearch-logstash-and-kibana-elk-c61a378f3cb4)
