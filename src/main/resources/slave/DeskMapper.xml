@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zempty.spring_skill_learn.dao.slave.DeskMapper">
+  <resultMap id="BaseResultMap" type="com.zempty.spring_skill_learn.entity.slave.Desk">
+    <!--@mbg.generated-->
+    <!--@Table desk-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="desk_num" jdbcType="INTEGER" property="deskNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, desk_num
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from desk
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from desk
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zempty.spring_skill_learn.entity.slave.Desk" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into desk (desk_num)
+    values (#{deskNum,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zempty.spring_skill_learn.entity.slave.Desk" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into desk
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deskNum != null">
+        desk_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deskNum != null">
+        #{deskNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zempty.spring_skill_learn.entity.slave.Desk">
+    <!--@mbg.generated-->
+    update desk
+    <set>
+      <if test="deskNum != null">
+        desk_num = #{deskNum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zempty.spring_skill_learn.entity.slave.Desk">
+    <!--@mbg.generated-->
+    update desk
+    set desk_num = #{deskNum,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="findByAll" resultMap="BaseResultMap">
+    select * from desk
+    </select>
+</mapper>

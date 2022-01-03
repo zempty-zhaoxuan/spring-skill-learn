@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zempty.spring_skill_learn.dao.master.UserDemoMapper">
+  <resultMap id="BaseResultMap" type="com.zempty.spring_skill_learn.entity.master.UserDemo">
+    <!--@mbg.generated-->
+    <!--@Table user_demo-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_age" jdbcType="VARCHAR" property="userAge" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_age, user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from user_demo
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from user_demo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zempty.spring_skill_learn.entity.master.UserDemo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into user_demo (user_age, user_name)
+    values (#{userAge,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zempty.spring_skill_learn.entity.master.UserDemo" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into user_demo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userAge != null">
+        user_age,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userAge != null">
+        #{userAge,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zempty.spring_skill_learn.entity.master.UserDemo">
+    <!--@mbg.generated-->
+    update user_demo
+    <set>
+      <if test="userAge != null">
+        user_age = #{userAge,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zempty.spring_skill_learn.entity.master.UserDemo">
+    <!--@mbg.generated-->
+    update user_demo
+    set user_age = #{userAge,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="findByAll" resultMap="BaseResultMap">
+    select * from user_demo;
+  </select>
+
+</mapper>

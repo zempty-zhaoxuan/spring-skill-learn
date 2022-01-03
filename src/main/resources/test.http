@@ -22,3 +22,11 @@ GET http://localhost:8080/index
 
 ###
 GET http://localhost:8080/xml
+
+
+###
+GET http://localhost:8080/master_list_user_demos
+
+
+###
+GET http://localhost:8080/slave_list_desks
