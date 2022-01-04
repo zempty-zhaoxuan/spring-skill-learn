@@ -218,3 +218,162 @@ public class SessionLocaleConfig  {
 
 ## 多数据源的配置（datasource)
 
+### 配置数据源
+数据源 DataSource 就是对应的数据库，有几个 DataSource 就可以连接几个数据库。DataSource 里面是连接数据库的 Connection对象，有了这个对象就可以针对数据库进行各种操作了。
+配置多数据源操作，详情参考[DataSourceConfig](./src/main/java/com/zempty/spring_skill_learn/config/datasource/DataSourceConfig.java)
+```java
+@Configuration
+public class DataSourceConfig {
+
+
+    @Primary
+    @Bean("master")
+    @ConfigurationProperties(prefix = "spring.datasource.master")
+    public DataSource masterDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean("slave")
+    @ConfigurationProperties(prefix = "spring.datasource.slave")
+    public DataSource slaveDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+}
+```
+多数据源的配置有一点需要强调通常需要一个声明一个主数据源，这个数据源需要使用 @Primary 注解,否则在使用各种框架使用多数据源的时候可能会出现问题。
+
+### mybatis 使用多数据源配置
+使用 mybatis 的使用我们主要是定义各种 xxxxMapper 类和 xxxMapper.xml 文件来操作数据库,mybatis 在使用多数据源的时候也需要指定 xxxxMapper 类的位置和xxxxMapper.xml的位置：
+如下参考 [MasterMybatisConfig](./src/main/java/com/zempty/spring_skill_learn/config/datasource/mybatis/MasterMybatisConfig.java)
+
+```java
+
+@Configuration
+@MapperScan(basePackages = "com.zempty.spring_skill_learn.dao.master",sqlSessionFactoryRef = "masterSqlSessionFactory")
+public class MasterMybatisConfig {
+
+
+    @Autowired
+    @Qualifier("master")
+    private DataSource dataSource;
+
+    @Bean("masterSqlSessionFactory")
+    @Primary
+    public SqlSessionFactory masterSqlSessionFactory()
+            throws Exception {
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setDataSource(dataSource);
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:/master/*.xml"));
+        bean.setTypeAliasesPackage("com.zempty.spring_skill_learn.entity.master");
+        return bean.getObject();// 设置mybatis的xml所在位置
+    }
+
+    // 表示这个数据源是默认数据源
+    @Primary
+    @Bean("masterSqlSessionTemplate")
+    public SqlSessionTemplate primarySqlSessionTemplate(
+             SqlSessionFactory sessionfactory) {
+        return new SqlSessionTemplate(sessionfactory);
+    }
+
+    @Primary
+    @Bean("masterDataSourceTransactionManager")
+    public DataSourceTransactionManager masterDataSourceTransactionManager() {
+        return new DataSourceTransactionManager(dataSource);
+    }
+}
+
+```
+该配置类主要是在 spring 中注入 3 个 bean 分别是 SqlSessionFactory , SqlSessionTemplate , DataSourceTransactionManager 分别是 SqlSession
+的工厂类，模版类（SqlSession子类)和事务管理器
+
+### JdbcTempalte 使用多数据源
+
+spring 给我们提供了 JdbcTemplate 来进行数据库的操作，我们通常直接在项目中使用即可。如果需要多个多数据源，可以在 spring 中注入多个 JdbcTemplate ,
+如下参考：[JdbcTemplateConfig](./src/main/java/com/zempty/spring_skill_learn/config/datasource/jdbc/JdbcTemplateConfig.java)
+
+```java
+@Configuration
+public class JdbcTemplateConfig {
+
+    @Autowired
+    @Qualifier("master")
+    private DataSource masterDataSource;
+
+    @Autowired
+    @Qualifier("slave")
+    private DataSource slaveDataSource;
+
+    @Primary
+    @Bean("masterJdbcTemplate")
+    public JdbcTemplate masterJdbcTemplate() {
+        return new JdbcTemplate(masterDataSource);
+    }
+
+    @Bean
+    public JdbcTemplate slaveJdbcTemplate() {
+        return new JdbcTemplate(slaveDataSource);
+    }
+}
+```
+
+### spring data jpa 多数据源的操作
+spring data jpa 多数据源的配置同 mybatis 很类似，需要指明 xxxxRepository 在哪里， 实体类对应的数据库表在哪里，有一个很重要的注解
+@EnableJpaRepositories 这里用来说明 EntityManagerFactory , TransactionManager 用的是哪一个，具体参考
+[JpaMasterConfig](./src/main/java/com/zempty/spring_skill_learn/config/datasource/jpa/JpaMasterConfig.java)
+
+```java
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        entityManagerFactoryRef="masterEntityManagerFactory",
+        transactionManagerRef="masterTransactionManager",
+        basePackages= {"com.zempty.spring_skill_learn.dao.master"}) //设置Repository所在位置
+public class JpaMasterConfig {
+
+
+    @Resource(name="master")
+    private DataSource masterDataSource;
+
+    @Autowired
+    private JpaProperties jpaProperties;
+
+    @Autowired
+    private HibernateProperties hibernateProperties;
+
+    private Map<String, Object> getVendorProperties() {
+        return hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings());
+    }
+
+    @Primary
+    @Bean("masterEntityManager")
+    public EntityManager masterEntityManager(EntityManagerFactoryBuilder builder) {
+        return Objects.requireNonNull(masterEntityManagerFactory(builder).getObject()).createEntityManager();
+    }
+
+    @Primary
+    @Bean("masterEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean masterEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+        return builder.dataSource(masterDataSource)
+                .packages("com.zempty.spring_skill_learn.entity.master") //设置实体类所在位置
+                .persistenceUnit("primaryPersistenceUnit")
+                .properties(getVendorProperties())
+                .build();
+    }
+
+    @Primary
+    @Bean("masterTransactionManager")
+    public PlatformTransactionManager masterTransactionManager(EntityManagerFactoryBuilder builder) {
+        return new JpaTransactionManager(Objects.requireNonNull(masterEntityManagerFactory(builder).getObject()));
+    }
+
+}
+```
+spring data jpa 多数据源的配置相对来说比较复杂，我在这里蹭遇到一个坑,就是 DataSource 配置中起初我没有使用 @Primary 注解，项目一直启动报错
+如图：
+
+![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/202201042203635.png)
+
+![](https://raw.githubusercontent.com/zempty-zhaoxuan/pics/master/202201042201921.png)
