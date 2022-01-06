@@ -1,3 +1,20 @@
+sspringboot 日常工作技巧总结
+=================
+  * [拦截器的使用](#拦截器的使用)
+  * [定义过滤器](#定义过滤器)
+  * [使用 ContextValueFilter (fastJson) 修改返回值](#使用-contextvaluefilter-fastjson-修改返回值)
+  * [提前封装实体类，后续接口使用](#提前封装实体类后续接口使用)
+  * [i18n 国际化的支持](#i18n-国际化的支持)
+     * [使用 spingboot 默认的 i18n 功能](#使用-spingboot-默认的-i18n-功能)
+     * [使用自定义的 i18n 功能](#使用自定义的-i18n-功能)
+  * [FreeMarker 的使用](#freemarker-的使用)
+  * [ELK 日志系统的搭建](#elk-日志系统的搭建)
+  * [多数据源的配置（datasource)](#多数据源的配置datasource)
+     * [配置数据源](#配置数据源)
+     * [mybatis 使用多数据源配置](#mybatis-使用多数据源配置)
+     * [JdbcTempalte 使用多数据源](#jdbctempalte-使用多数据源)
+     * [spring data jpa 多数据源的操作](#spring-data-jpa-多数据源的操作)
+
 ## 拦截器的使用
 1. 定义拦截器需要实现**HandlerInterceptor**,可以实现如下三个方法：
 具体实现参考：[TestInterceptor](./src/main/java/com/zempty/spring_skill_learn/interceptor/TestInterceptor.java)
