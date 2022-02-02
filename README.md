@@ -258,7 +258,7 @@ public class DataSourceConfig {
 
 }
 ```
-多数据源的配置有一点需要强调通常需要一个声明一个主数据源，这个数据源需要使用 @Primary 注解,否则在使用各种框架使用多数据源的时候可能会出现问题。
+多数据源的配置有一点需要强调通常要声明一个主数据源，这个数据源需要使用 @Primary 注解,否则在使用各种框架操作多数据源的时候可能会出现问题。
 
 ### mybatis 使用多数据源配置
 使用 mybatis 的使用我们主要是定义各种 xxxxMapper 类和 xxxMapper.xml 文件来操作数据库,mybatis 在使用多数据源的时候也需要指定 xxxxMapper 类的位置和xxxxMapper.xml的位置：
